@@ -1,0 +1,6 @@
+../drivers/src/stm32f407xx_usart_driver.c:11:6:USART_Init	9
+../drivers/src/stm32f407xx_usart_driver.c:78:6:USART_SetBaudRate	3
+../drivers/src/stm32f407xx_usart_driver.c:127:6:USART_TransmitData	7
+../drivers/src/stm32f407xx_usart_driver.c:176:6:USART_PeripheralControl	2
+../drivers/src/stm32f407xx_usart_driver.c:204:6:USART_PeriClockControl	6
+../drivers/src/stm32f407xx_usart_driver.c:230:9:GetUSART_FlagStatus	2

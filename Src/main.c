@@ -15,8 +15,17 @@
  *
  ******************************************************************************
  */
-
+//Testing USART driver
 #include <stdint.h>
+#include <string.h>
+
+#include "stm32f407xx_usart_driver.h"
+#include "stm32f407xx_gpio_driver.h"
+
+void delay()
+{
+	for(uint32_t i=0;i<80000;i++);
+}
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
@@ -24,6 +33,42 @@
 
 int main(void)
 {
+	USART_Handle_t huart2;
+	GPIO_Handle_t uart_gpio;
+
+	uart_gpio.pGPIOx = GPIOA;
+	uart_gpio.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
+	uart_gpio.GPIO_PinConfig.GPIO_PinMode =	GPIO_MODE_ALTFN;
+	uart_gpio.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_2;
+	uart_gpio.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+	uart_gpio.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	uart_gpio.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
+
+	GPIO_Init(&uart_gpio);
+
+	uart_gpio.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_3;
+	GPIO_Init(&uart_gpio);
+
+	huart2.pUSARTx = USART2;
+	huart2.usart_config.BaudRate = 115200;
+	huart2.usart_config.NoOfStopBits = USART_STOPBITS_1;
+	huart2.usart_config.OverSampling = USART_OVERSAMPLING_8;
+	huart2.usart_config.ParityControl = USART_PARITY_DISABLE;
+	huart2.usart_config.mode = USART_MODE_TX;
+	huart2.usart_config.WordLen = USART_WORDLEN_8BITS;
+
+	USART_Init(&huart2);
+
+	char data[] = "Testing USART driver\r\n";
+
+	USART_TransmitData(&huart2, (uint8_t*)data, strlen(data));
+
     /* Loop forever */
-	for(;;);
+	for(;;)
+	{
+		delay();
+		delay();
+		delay();
+		USART_TransmitData(&huart2, (uint8_t*)data, strlen(data));
+	}
 }
