@@ -11,7 +11,7 @@
 #include<stddef.h>
 #include<stdint.h>
 
-#include "common.h"
+//#include "common.h"
 
 #define __vo volatile
 #define __weak __attribute__((weak))
@@ -278,7 +278,6 @@ typedef struct
 #define EXTI				((EXTI_RegDef_t*)EXTI_BASEADDR)
 #define SYSCFG				((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
-
 #define SPI1  				((SPI_RegDef_t*)SPI1_BASEADDR)
 #define SPI2  				((SPI_RegDef_t*)SPI2_BASEADDR)
 #define SPI3  				((SPI_RegDef_t*)SPI3_BASEADDR)
@@ -308,6 +307,17 @@ typedef struct
 #define GPIOH_PCLK_EN()		(RCC->AHB1ENR |= (1 << 7))
 #define GPIOI_PCLK_EN()		(RCC->AHB1ENR |= (1 << 8))
 
+/* Clock disable macros for GPIO peripherals */
+#define GPIOA_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<0))
+#define GPIOB_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<1))
+#define GPIOC_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<2))
+#define GPIOD_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<3))
+#define GPIOE_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<4))
+#define GPIOF_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<5))
+#define GPIOG_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<6))
+#define GPIOH_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<7))
+#define GPIOI_PCLK_DI()		(RCC->AHB1ENR &= ~(1<<8))
+
 
 /*
  * Clock Enable Macros for I2Cx peripherals
@@ -315,6 +325,13 @@ typedef struct
 #define I2C1_PCLK_EN() (RCC->APB1ENR |= (1 << 21))
 #define I2C2_PCLK_EN() (RCC->APB1ENR |= (1 << 22))
 #define I2C3_PCLK_EN() (RCC->APB1ENR |= (1 << 23))
+
+/*
+ * Clock Disable Macros for I2Cx peripherals
+ */
+#define I2C1_PCLK_DI() (RCC->APB1ENR &= ~(1 << 21))
+#define I2C2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 22))
+#define I2C3_PCLK_DI() (RCC->APB1ENR &= ~(1 << 23))
 
 
 /*
@@ -329,23 +346,27 @@ typedef struct
 /*
  * Clock Enable Macros for USARTx peripherals
  */
-#define USART1_PCCK_EN() (RCC->APB2ENR |= (1 << 4))
-#define USART2_PCCK_EN() (RCC->APB1ENR |= (1 << 17))
-#define USART3_PCCK_EN() (RCC->APB1ENR |= (1 << 18))
-#define UART4_PCCK_EN()  (RCC->APB1ENR |= (1 << 19))
-#define UART5_PCCK_EN()  (RCC->APB1ENR |= (1 << 20))
-#define USART6_PCCK_EN() (RCC->APB1ENR |= (1 << 5))
+#define USART1_PCLK_EN() (RCC->APB2ENR |= (1 << 4))
+#define USART2_PCLK_EN() (RCC->APB1ENR |= (1 << 17))
+#define USART3_PCLK_EN() (RCC->APB1ENR |= (1 << 18))
+#define UART4_PCLK_EN()  (RCC->APB1ENR |= (1 << 19))
+#define UART5_PCLK_EN()  (RCC->APB1ENR |= (1 << 20))
+#define USART6_PCLK_EN() (RCC->APB1ENR |= (1 << 5))
+
+/*
+ * Clock Enable Macros for USARTx peripherals
+ */
+#define USART1_PCLK_DI() (RCC->APB2ENR &= ~(1 << 4))
+#define USART2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 17))
+#define USART3_PCLK_DI() (RCC->APB1ENR &= ~(1 << 18))
+#define UART4_PCLK_DI()  (RCC->APB1ENR &= ~(1 << 19))
+#define UART5_PCLK_DI()  (RCC->APB1ENR &= ~(1 << 20))
+#define USART6_PCLK_DI() (RCC->APB1ENR &= ~(1 << 5))
 
 /*
  * Clock Enable Macros for SYSCFG peripheral
  */
 #define SYSCFG_PCLK_EN() (RCC->APB2ENR |= (1 << 14))
-
-
-/*
- * Clock Disable Macros for GPIOx peripherals
- */
-#define GPIOA_PCLK_DI()
 
 /*
  * Clock Disable Macros for SPIx peripherals
@@ -395,28 +416,33 @@ typedef struct
 /*
  * IRQ(Interrupt Request) Numbers of STM32F407x MCU
  * NOTE: update these macros with valid values according to your MCU
- * TODO: You may complete this list for other peripherals
+ * TODO: complete this list for other peripherals
  */
 
-#define IRQ_NO_EXTI0 		6
-#define IRQ_NO_EXTI1 		7
-#define IRQ_NO_EXTI2 		8
-#define IRQ_NO_EXTI3 		9
-#define IRQ_NO_EXTI4 		10
-#define IRQ_NO_EXTI9_5 		23
-#define IRQ_NO_EXTI15_10 	40
-#define IRQ_NO_SPI1			35
-#define IRQ_NO_SPI2         36
-#define IRQ_NO_SPI3         51
-#define IRQ_NO_SPI4
-#define IRQ_NO_I2C1_EV     31
-#define IRQ_NO_I2C1_ER     32
-#define IRQ_NO_USART1	    37
-#define IRQ_NO_USART2	    38
-#define IRQ_NO_USART3	    39
-#define IRQ_NO_UART4	    52
-#define IRQ_NO_UART5	    53
-#define IRQ_NO_USART6	    71
+typedef enum
+{
+	//Related to GPIO
+	EXTI0					= 6,
+	EXTI1					= 7,
+	EXTI2					= 8,
+	EXTI3					= 9,
+	EXTI4					= 10,
+	EXTI5_9					= 23,
+	EXTI15_10				= 40,
+
+	//Related to I2C
+	I2C1_EV					= 31,
+	I2C1_ER					= 32,
+	I2C2_EV					= 33,
+	I2C2_ER					= 34,
+	I2C3_EV					= 72,
+	I2C3_ER					= 73,
+
+	//Related to USART/UART
+	USART1_IT				= 37,
+	USART2_IT				= 38,
+	USART3_IT				= 39,
+}IRQ_Number_t;
 
 
 /*

@@ -9,6 +9,7 @@
 #define INCLUDES_STM32F407XX_USART_DRIVER_H_
 
 #include "stm32f407xx.h"
+#include "common.h"
 
 /*
  *@USART_Mode
@@ -86,6 +87,13 @@
 #define USART_FLAG_RXNE 		( 1 << USART_SR_RXNE)
 #define USART_FLAG_TC 			( 1 << USART_SR_TC)
 
+typedef enum
+{
+	USART_EVENT_RXNE			=	0x00,	/* Received a byte */
+	USART_EVENT_SW_RX_OVERFLOW,				/* Software Rx buffer overflow */
+}USART_Event_t;
+
+typedef void (*uart_callback)(USART_Event_t uart_event);
 
 typedef struct
 {
@@ -99,16 +107,33 @@ typedef struct
 
 typedef struct
 {
-	usart_config_t	usart_config;	/* Pointer to config structure to be filled by user app */
 	USART_RegDef_t	*pUSARTx;		/* Pointer to the Base Address of USART */
+	usart_config_t	usart_config;	/* Pointer to config structure to be filled by user app */
+
+	__vo uint32_t	head;
+	__vo uint32_t 	tail;
+	__vo uint32_t	rxlen;
+	uart_callback	rxcallback;
+	uint8_t			*pRxBuffer;
+	uint32_t 		RxBfrSize;
 }USART_Handle_t;
 
+
 void USART_Init(USART_Handle_t *pUSART_Handle);
+void USART_RX_IT_Init(USART_Handle_t *pUSART_Handle, uint8_t *pRxBuffer, uint32_t RxBfrSize, uart_callback rxcallback);
 void USART_TransmitData(USART_Handle_t *pUSART_Handle, uint8_t *pTxBfr, uint32_t len);
 void USART_SetBaudRate(USART_Handle_t *pUSART_Handle, uint32_t baudrate);
 
 void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t Cmd);
+
+IRQ_Number_t USART_GetIRQ_Number(USART_RegDef_t *pUSARTx);
+
+void USART_IRQ_Config(USART_RegDef_t *pUSARTx, uint8_t EnOrDi);
+void USART_IRQ_Handling(USART_Handle_t *pUSART_Handle);
+uint8_t PushToUSART_RxQueue(USART_Handle_t *pUSART_Handle, uint8_t data);
+uint8_t ReadUSART_RxQueue(USART_Handle_t *pUSART_Handle);
+uint8_t GetRXQueueLen(USART_Handle_t *pUSART_Handle);
 
 uint8_t GetUSART_FlagStatus(USART_RegDef_t *pUSARTx, uint32_t Flag);
 
